@@ -1,0 +1,252 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>USTS — Demo (Universal Supplier Trust Score)</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{ --accent:#0f62fe; --bg:#f6f8fb; --card:#ffffff; --muted:#6b7280; }
+    *{box-sizing:border-box; font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+    body{margin:0; background:var(--bg); color:#111827}
+    header{background:linear-gradient(90deg,#07203a, #0f62fe); color:white; padding:28px 20px}
+    .container{max-width:1100px;margin:0 auto;padding:28px}
+    .brand{font-weight:700;font-size:20px}
+    .hero{display:flex;gap:24px;align-items:center}
+    .hero .left{flex:1}
+    .cta{background:white;color:#07203a;padding:12px 18px;border-radius:8px;display:inline-block;font-weight:600}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(11,22,40,0.06)}
+    .grid{display:grid;grid-template-columns:1fr 380px;gap:20px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
+    input, select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef;background:#fff}
+    button{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+    .score-circle{width:130px;height:130px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px}
+    .muted{color:var(--muted);font-size:13px}
+    footer{padding:28px;text-align:center;color:var(--muted)}
+    nav{display:flex;gap:12px;align-items:center}
+    nav a{color:rgba(255,255,255,0.9);text-decoration:none;font-weight:600}
+    .small{font-size:13px}
+    .badge{display:inline-block;background:#eef2ff;color:#062c6a;padding:6px 10px;border-radius:999px;font-weight:600}
+    @media(max-width:880px){.grid{grid-template-columns:1fr} .hero{flex-direction:column;align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="brand">USTS — Universal Supplier Trust Score (Demo)</div>
+        <nav>
+          <a href="#demo">Demo</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="hero" style="margin-top:22px">
+        <div class="left">
+          <h1 style="margin:0;font-size:28px">Check supplier trust in seconds — prototype demo</h1>
+          <p class="muted" style="margin-top:10px">USTS gives a concise trust score for any supplier using verifiable signals. This demo simulates the scoring logic so you can see how the final product will behave.</p>
+          <div style="margin-top:12px">
+            <a class="cta" href="#demo">Try the Demo</a>
+          </div>
+        </div>
+        <div style="width:360px">
+          <div class="card">
+            <div class="small muted">Demo Pilot Offer</div>
+            <h3 style="margin:8px 0 6px">Become a first partner</h3>
+            <p class="muted small">Customize the full product for your suppliers. Pilot fee funds the final AI & integrations.</p>
+            <div style="margin-top:12px;display:flex;gap:10px">
+              <button id="bookDemo">Request Demo</button>
+              <button onclick="window.location='#contact'" style="background:#fff;color:#07203a;border:1px solid #e6e9ef">Contact</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="demo" style="margin-top:18px">
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h3 style="margin-top:0">Supplier Trust Check (Demo)</h3>
+          <p class="muted small">Enter supplier details. The demo will use deterministic mock logic to produce a professional trust score and insights.</p>
+          <div style="margin-top:12px">
+            <label>Supplier Name</label>
+            <input id="supplierName" placeholder="Example: Gulf Steel Co" />
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <div style="flex:1">
+              <label>Country</label>
+              <select id="country">
+                <option value="IN">India</option>
+                <option value="KW">Kuwait</option>
+                <option value="SA">Saudi Arabia</option>
+                <option value="CN">China</option>
+                <option value="US">United States</option>
+                <option value="DE">Germany</option>
+              </select>
+            </div>
+            <div style="flex:1">
+              <label>Industry</label>
+              <select id="industry">
+                <option value="manufacturing">Manufacturing</option>
+                <option value="oil">Oil & Energy</option>
+                <option value="construction">Construction</option>
+                <option value="electronics">Electronics</option>
+                <option value="food">Food & Consumer</option>
+              </select>
+            </div>
+          </div><div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+        <button id="runDemo">Run Demo Score</button>
+        <div class="muted small">Or try sample suppliers: <a href="#" onclick="fillSample('Gulf Steel Co')">Gulf Steel Co</a>, <a href="#" onclick="fillSample('Desert Oil Services')">Desert Oil Services</a></div>
+      </div>
+
+      <div id="notes" style="margin-top:12px" class="muted small">
+        Demo note: This prototype simulates signals. The full product will verify supplier-submitted data and combine public records & shipping/financial feeds.
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px" id="resultCard" hidden>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="muted small">Supplier</div>
+          <div id="rName" style="font-weight:700;font-size:18px"></div>
+          <div id="rMeta" class="muted small" style="margin-top:6px"></div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:center">
+          <div style="text-align:center">
+            <div id="scoreCircle" class="score-circle card" style="background:linear-gradient(180deg,#e6f0ff,#fff);width:120px;height:120px">--</div>
+            <div class="muted small" style="margin-top:8px">Trust Score</div>
+          </div>
+        </div>
+      </div>
+
+      <hr style="margin:14px 0;border:none;border-top:1px solid #eef2f7" />
+
+      <div style="display:flex;gap:18px;align-items:flex-start">
+        <div style="flex:1">
+          <canvas id="radarChart" width="400" height="300"></canvas>
+        </div>
+        <div style="width:260px">
+          <div style="margin-bottom:8px"><strong>Key Risks & Recommendations</strong></div>
+          <ul id="recommendations" class="muted small"></ul>
+          <div style="margin-top:12px">
+            <button id="downloadReport">Download Report (PDF)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside>
+    <div class="card">
+      <div class="muted small">How Score is Calculated</div>
+      <ol style="margin-top:8px" class="muted small">
+        <li>Delivery Reliability — shipping & references (mocked in demo)</li>
+        <li>Financial Strength — public records & credit signals</li>
+        <li>Compliance — registrations, licenses, local compliance</li>
+        <li>Reputation — news & review signals</li>
+      </ol>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="muted small">Sample Use Cases</div>
+      <ul style="margin-top:8px" class="muted small">
+        <li>Quick supplier checks before purchase orders</li>
+        <li>Pre-screening during vendor onboarding</li>
+        <li>Audit reports for procurement & risk teams</li>
+      </ul>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <div class="muted small">Pilot Pricing (example)</div>
+      <div style="margin-top:8px;font-weight:700">Pilot fee: ₹3,00,000</div>
+      <div class="muted small" style="margin-top:6px">Includes customization and API integration for up to 1,000 suppliers.</div>
+    </div>
+  </aside>
+</div>
+
+<section id="about" style="margin-top:18px">
+  <div class="card">
+    <h3 style="margin-top:0">About USTS</h3>
+    <p class="muted small">USTS is a vision to reduce global supplier risk with a single, verified trust score per supplier. This demo shows the scoring concept. The final product will combine public registries, shipping & customs feeds, financial signals, and supplier-submitted verification.</p>
+  </div>
+</section>
+
+<section id="contact" style="margin-top:18px">
+  <div class="card">
+    <h3 style="margin-top:0">Contact & Request Pilot</h3>
+    <p class="muted small">To request a pilot or partnership, contact: <strong>syedzohanuddin22912@gmail.com</strong></p>
+  </div>
+</section>
+
+</main>
+<footer>
+  <div class="container small-muted">USTS demo • Built by a teen founder • Use this prototype to show concept and secure pilot funding.</div>
+</footer>
+<script>
+// ------- Demo scoring logic (deterministic via string hashing) -------
+function hashStringToInt(str){
+  let h = 2166136261 >>> 0;
+  for(let i=0;i<str.length;i++){ h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0; }
+  return h;
+}
+
+function generateScores(name,country,industry){
+  const seed = hashStringToInt(name+country+industry);
+  // Create four sub-scores (0-100) deterministically
+  const reliability = (seed % 30) * 3 + ((seed>>3) % 11); // pseudo
+  const financial = ((seed>>5) % 31) * 3 + ((seed>>2) % 7);
+  const compliance = ((seed>>8) % 28) * 3 + ((seed>>1) % 5);
+  const reputation = ((seed>>13) % 32) * 3 + ((seed>>4) % 9);
+  // clamp
+  const clamp = v => Math.max(8, Math.min(98, Math.round(v)));
+  return {
+    reliability: clamp(reliability),
+    financial: clamp(financial),
+    compliance: clamp(compliance),
+    reputation: clamp(reputation)
+  };
+}
+
+function computeTrustScore(parts){
+  // Weighted average: reliability 30%, financial 30%, compliance 20%, reputation 20%
+  const score = Math.round((parts.reliability*0.3)+(parts.financial*0.3)+(parts.compliance*0.2)+(parts.reputation*0.2));
+  return Math.min(100,Math.max(0,score));
+}
+
+// Chart instances
+let radarChart = null;
+
+function renderResult(name,country,industry,parts,score){
+  document.getElementById('resultCard').hidden = false;
+  document.getElementById('rName').innerText = name;
+  document.getElementById('rMeta').innerText = country + ' • ' + industry;
+  const circle = document.getElementById('scoreCircle');
+  circle.innerText = score + '/100';
+  // color
+  if(score>=75) circle.style.background='linear-gradient(180deg,#e6fff4,#fff)';
+  else if(score>=50) circle.style.background='linear-gradient(180deg,#fff7e6,#fff)';
+  else circle.style.background='linear-gradient(180deg,#fff2f2','#fff)';
+
+// Radar chart
+const ctx = document.getElementById('radarChart').getContext('2d');
+const data = {
+    labels: ['Reliability', 'Financial', 'Compliance', 'Reputation'],
+    datasets: [{
+        label: 'Supplier sub-scores',
+        data: [parts.reliability, parts.financial, parts.compliance, parts.reputation],
+        fill: true,
+        backgroundColor: 'rgba(15,98,254,0.12)',
+        borderColor: 'rgba(15,98,254,0.9)',
+        pointBackgroundColor: 'rgba(15,98,254,1)'
+    }]
+};
+if (radarChart) radarChart.destroy();
+radarChart = new Chart(ctx, {type: 'radar', data: data, options: {scales: {r: {suggestedMin: 0, suggestedMax: 100}}}});
+}
+document.getElementById('runDemo').addEventListener('click', ()=>{
+  const name = document.getElementById('supplierName').value
